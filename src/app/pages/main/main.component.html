@@ -1,0 +1,15 @@
+<section class="main flex flex-col">
+  <shared-header />
+  <div class="container flex flex-col justify-start items-center">
+    <h1 class="primary-text">¡Te damos la bienvenida al módulo de pagos!</h1>
+    <p>
+      Este módulo le permitirá listar, filtrar y registrar pagos con un
+      control básico de permisos y exportación de datos.
+    </p>
+    @if (isShowingForm) {}
+    @else {
+      <pages-payment-list />
+    }
+  </div>
+  <shared-footer />
+</section>

@@ -1,0 +1,54 @@
+<!-- login.component.html -->
+<section class="min-h-screen flex items-center justify-center p-6">
+  <div class="w-full max-w-md p-6 rounded-2xl shadow-md flex flex-col gap-6 primary-border">
+    <!-- Header -->
+    <header class="flex flex-col items-start gap-2">
+      <h1 class="font-semibold">Welcome back</h1>
+      <p class="text-sm">Sign in to continue to your account</p>
+    </header>
+
+    <!-- Form (bind to [formGroup]="loginForm" and (ngSubmit)="onSubmit()") -->
+    <form class="flex flex-col gap-4" [formGroup]="loginForm" (ngSubmit)="onSubmit()" autocomplete="off">
+      <!-- Email -->
+      <div class="flex flex-col gap-2">
+        <label for="email" class="text-sm">Email</label>
+        <input id="email" type="email" pInputText formControlName="email" class="flex-1 text-sm"
+          placeholder="you@example.com" required />
+      </div>
+
+      <!-- Password -->
+      <div class="flex flex-col gap-2">
+        <label for="password" class="text-sm">Password</label>
+        <p-inputgroup>
+          <p-inputgroup-addon class="cursor-pointer" (click)="toggleIcon()">
+            <i [class]="passwordIcon"></i>
+          </p-inputgroup-addon>
+          <input id="password"  class="flex-1 text-sm" [type]="passwordType" pInputText formControlName="password" placeholder="••••••••" required />
+        </p-inputgroup>
+      </div>
+
+      <!-- Remember & Forgot -->
+      <div class="flex items-center justify-between gap-4">
+        <div class="flex items-center justify-center gap-2">
+          <p-checkbox inputId="remember" binary="true" [value]="isRememberActive" (onChange)="rememberUser()" />
+          <label for="remember" class="text-sm">Remember me</label>
+        </div>
+
+        <a class="text-sm underline underline-offset-2 cursor-pointer">
+          Forgot password?
+        </a>
+      </div>
+
+      <!-- Submit -->
+      <div class="flex flex-col gap-3 pt-2">
+        <button pButton type="submit" label="Sign in" class="w-full font-medium" [disabled]="loginForm.invalid"></button>
+      </div>
+    </form>
+
+    <!-- Footer: sign up -->
+    <footer class="flex items-center justify-center gap-2 p-3">
+      <p class="text-sm">Don't have an account?</p>
+      <a class="text-sm underline-offset-2" href="/signup">Sign up</a>
+    </footer>
+  </div>
+</section>

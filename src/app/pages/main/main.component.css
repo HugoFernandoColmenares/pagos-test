@@ -1,0 +1,28 @@
+/* Main container fills the screen */
+.main {
+  min-height: 100vh;
+  background: var(--color-bg);
+  font-family: var(--font-sans);
+  color: var(--color-text);
+}
+
+/* Central container with surface background */
+.container {
+  gap: 1.5rem; /* Tailwind gap-6 */
+  padding: 1.5rem; /* Tailwind p-6 */
+  flex: 1;
+  background: var(--color-surface);
+  border-radius: var(--radius-md);
+
+  h1, p {
+    text-align: center;
+  }
+
+  h1 {
+    font-weight: 600;
+  }
+
+  p {
+    width: 80%;
+  }
+}
