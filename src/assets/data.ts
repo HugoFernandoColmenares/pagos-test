@@ -34,7 +34,7 @@ export const PAYMENTS: Payment[] = [
     invoiceUrl: 'https://example.com/facturas/P-0002.pdf',
     supportUrl: null,
     traceability: [
-      { user: 'conta', date: '2025-08-02T14:00:00Z', note: 'Factura pagada' },
+      { user: 'conta', date: '2025-08-02T14:00:00Z', note: 'Creado' },
     ],
   },
   {
@@ -52,7 +52,7 @@ export const PAYMENTS: Payment[] = [
     invoiceUrl: null,
     supportUrl: null,
     traceability: [
-      { user: 'ventas', date: '2025-08-03T11:30:00Z', note: 'Pago recibido' },
+      { user: 'ventas', date: '2025-08-03T11:30:00Z', note: 'Modificado' },
     ],
   },
   {
@@ -70,7 +70,7 @@ export const PAYMENTS: Payment[] = [
     invoiceUrl: null,
     supportUrl: null,
     traceability: [
-      { user: 'karla', date: '2025-08-04T10:00:00Z', note: 'Solicitud rechazada' },
+      { user: 'karla', date: '2025-08-04T10:00:00Z', note: 'Creado' },
     ],
   },
   {
@@ -88,7 +88,7 @@ export const PAYMENTS: Payment[] = [
     invoiceUrl: 'https://example.com/facturas/P-0005.pdf',
     supportUrl: 'https://example.com/soportes/P-0005.pdf',
     traceability: [
-      { user: 'admin', date: '2025-08-05T13:00:00Z', note: 'Orden pagada' },
+      { user: 'admin', date: '2025-08-05T13:00:00Z', note: 'Creado' },
     ],
   },
   // 👇 Se generan automáticamente más variaciones hasta P-0050
@@ -136,7 +136,7 @@ export const PAYMENTS: Payment[] = [
         {
           user: 'system',
           date: date.toISOString(),
-          note: 'Registro automático generado',
+          note: 'Creado',
         },
       ],
     } as Payment;

@@ -16,7 +16,7 @@ export class PaymentService {
   }
 
   // ====== Get by Id ======
-  public getPaymentById(id: string): Payment | null {
+  public async getPaymentById(id: string): Promise<Payment | null> {
     const payment = this.paymentData().find(p => p.id === id);
     return payment ?? null;
   }
@@ -27,7 +27,7 @@ export class PaymentService {
   }
 
   // ====== UPDATE ======
-  public updatePayment(updatedPayment: Payment): void {
+  public async updatePayment(updatedPayment: Payment): Promise<void> {
     this.paymentData.update(currentPayments => currentPayments.map(p => (p.id === updatedPayment.id ? updatedPayment : p)) );
   }
 

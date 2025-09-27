@@ -5,7 +5,7 @@ import Swal from 'sweetalert2';
   providedIn: 'root',
 })
 export class AlertService {
-  public successAlet(message: string = 'Operación exitosa.') {
+  public successAlert(message: string = 'Operación exitosa.') {
     Swal.fire({
       title: 'Éxito',
       text: message,
@@ -14,7 +14,7 @@ export class AlertService {
     });
   }
 
-  public errorAlet(message: string = 'Algo salió mal.') {
+  public errorAlert(message: string = 'Algo salió mal.') {
     Swal.fire({
       title: 'Error',
       text: message,
@@ -23,11 +23,13 @@ export class AlertService {
     });
   }
 
-  public optionsAlet(title: string = '¿Desea continuar?') {
-    Swal.fire({
-      title: title,
-      showCancelButton: true,
-      confirmButtonText: 'Aceptar',
-    });
-  }
+  public optionsAlert(title: string = '¿Desea continuar?') {
+  return Swal.fire({
+    title,
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Aceptar',
+    cancelButtonText: 'Cancelar',
+  });
+}
 }

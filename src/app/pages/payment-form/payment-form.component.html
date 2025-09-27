@@ -1,1 +1,185 @@
-<p>payment-form works!</p>
+<div class="flex flex-col items-center gap-4">
+  <h1 class="primary-text"> {{ title }} Registro</h1>
+
+  <form
+    [formGroup]="form"
+    (ngSubmit)="onSubmit()"
+    class="max-w-5xl mx-auto bg-white primary-border rounded-2xl p-6 grid gap-6 md:grid-cols-2"
+  >
+
+    <!-- Columna izquierda -->
+    <div class="flex flex-col gap-4">
+
+      <!-- Fecha -->
+      <div class="flex flex-col">
+        <label class="block text-sm font-semibold mb-1">Fecha *</label>
+        <p-datepicker formControlName="date" [showIcon]="true" dateFormat="dd/mm/yy" placeholder="Fecha" />
+        @if (form.get('date')?.invalid && form.get('date')?.touched) {
+          <small class="p-error">La fecha es obligatoria</small>
+        }
+      </div>
+
+      <!-- Empresa -->
+      <div class="flex flex-col">
+        <label class="block text-sm font-semibold mb-1">Empresa *</label>
+        <p-select
+          [options]="companies"
+          formControlName="company"
+          placeholder="Empresa"
+          class="w-full"
+        />
+        @if (form.get('company')?.invalid && form.get('company')?.touched) {
+          <small class="p-error">La empresa es obligatoria</small>
+        }
+      </div>
+
+      <!-- Tercero -->
+      <div class="flex flex-col">
+        <label class="block text-sm font-semibold mb-1">Tercero *</label>
+        <p-select
+          [options]="thirdParties"
+          formControlName="thirdParty"
+          placeholder="Nombre del tercero"
+          class="w-full"
+        />
+        @if (form.get('thirdParty')?.errors?.['required'] && form.get('thirdParty')?.touched) {
+          <small class="p-error">El tercero es obligatorio</small>
+        }
+      </div>
+
+      <!-- Valor -->
+      <div class="flex flex-col">
+        <label class="block text-sm font-semibold mb-1">Valor *</label>
+        <p-inputNumber
+          formControlName="operationValue"
+          mode="currency"
+          currency="COP"
+          locale="es-CO"
+          [min]="0"
+          class="w-full"
+        ></p-inputNumber>
+        @if (form.get('operationValue')?.invalid && form.get('operationValue')?.touched) {
+          <small class="p-error">El valor debe ser mayor que 0</small>
+        }
+      </div>
+    </div>
+
+    <!-- Columna derecha -->
+    <div class="flex flex-col gap-4">
+
+      <!-- Estado -->
+      <div class="flex flex-col">
+        <label class="block text-sm font-semibold mb-1">Estado *</label>
+        <p-select
+          [options]="statuses"
+          formControlName="paymentStatus"
+          placeholder="Seleccione estado"
+          class="w-full"
+        />
+        @if (form.get('paymentStatus')?.invalid && form.get('paymentStatus')?.touched) {
+          <small class="p-error">El estado es obligatorio</small>
+        }
+      </div>
+
+      <!-- Forma de Pago -->
+      <div>
+        <label class="block text-sm font-semibold mb-1">Forma de Pago</label>
+        <p-select
+          [options]="methods"
+          formControlName="paymentMethod"
+          placeholder="Seleccione método"
+          class="w-full"
+        ></p-select>
+      </div>
+
+      <!-- Ingreso / Gasto -->
+      <div>
+        <label class="block text-sm font-semibold mb-1">Tipo</label>
+        <p-select
+          [options]="types"
+          formControlName="incomeOrExpense"
+          placeholder="Seleccione tipo"
+          class="w-full"
+        ></p-select>
+      </div>
+
+      <!-- Rubro -->
+      <div>
+        <label class="block text-sm font-semibold mb-1">Rubro</label>
+        <p-select
+          [options]="categories"
+          formControlName="category"
+          placeholder="Categoría"
+          class="w-full"
+        />
+      </div>
+
+      <!-- Área Operación -->
+      <div>
+        <label class="block text-sm font-semibold mb-1">Área de Operación</label>
+        <p-select
+          [options]="operationAreas"
+          formControlName="operationArea"
+          placeholder="Área de operación"
+          class="w-full"
+        />
+      </div>
+
+    </div>
+
+    <!-- Tiene Presupuesto -->
+    <div class="flex items-center gap-2 mt-2">
+      <p-checkbox formControlName="hasBudget" binary="true"></p-checkbox>
+      <label class="text-sm">Tiene presupuesto</label>
+    </div>
+
+    <!-- Archivos (ocupan toda la fila) -->
+    <div class="md:col-span-2 grid md:grid-cols-2 gap-6">
+      <div>
+        <label class="block text-sm font-semibold mb-1">Factura (PDF/Imagen)</label>
+        <p-fileUpload
+          mode="basic"
+          name="invoice"
+          customUpload="true"
+          chooseLabel="Seleccionar"
+          (select)="onFileSelect($event, 'invoice')"
+          (clear)="onRemoveFile('invoice')"
+        ></p-fileUpload>
+        @if (invoiceFile) {
+          <div class="mt-1 text-sm text-gray-600">
+            {{ invoiceFile.name }} ({{ invoiceFile.size/1000 | number:'1.0-0' }} KB)
+          </div>
+        }
+      </div>
+
+      <div>
+        <label class="block text-sm font-semibold mb-1">Soporte (PDF/Imagen)</label>
+        <p-fileUpload
+          mode="basic"
+          name="support"
+          customUpload="true"
+          chooseLabel="Seleccionar"
+          (select)="onFileSelect($event, 'support')"
+          (clear)="onRemoveFile('support')"
+        ></p-fileUpload>
+        @if (supportFile) {
+          <div class="mt-1 text-sm text-gray-600">
+            {{ supportFile.name }} ({{ supportFile.size/1000 | number:'1.0-0' }} KB)
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- Botones -->
+    <div class="md:col-span-2 flex justify-end gap-3 mt-6">
+      <button pButton type="submit" [label]="title" [disabled]="form.invalid" class="px-6 py-2"></button>
+      <button
+        pButton
+        label="Volver"
+        class="p-button-outlined px-6 py-2"
+        type="button"
+        (click)="onClose()"
+      ></button>
+    </div>
+  </form>
+</div>

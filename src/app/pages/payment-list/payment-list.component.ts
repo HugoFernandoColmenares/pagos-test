@@ -1,4 +1,11 @@
-import { Component, inject, ViewChild } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  inject,
+  Input,
+  Output,
+  ViewChild,
+} from '@angular/core';
 import { PaymentService } from '../../core/services/payment.service';
 import { Payment } from '../../core/interfaces/payment.interface';
 import { CommonModule } from '@angular/common';
@@ -12,6 +19,7 @@ import { DatePickerModule } from 'primeng/datepicker';
 import { SelectModule } from 'primeng/select';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { FilterService } from 'primeng/api';
+import { AlertService } from '../../core/services/alert.service';
 
 @Component({
   selector: 'pages-payment-list',
@@ -31,14 +39,17 @@ import { FilterService } from 'primeng/api';
 })
 export class PaymentListComponent {
   @ViewChild('paymentTable') paymentTable!: Table;
+  @Input() payments: Payment[] = [];
+  @Input() statuses: string[] = [];
+  @Input() methods: string[] = [];
+  @Input() companies: string[] = [];
+  @Output() newRegister = new EventEmitter<void>();
+  @Output() editRegister = new EventEmitter<Payment>();
 
   private paymentService = inject(PaymentService);
   private filterService = inject(FilterService);
+  private alertService = inject(AlertService);
 
-  protected payments: Payment[] = [];
-  protected statuses: string[] = [];
-  protected methods: string[] = [];
-  protected companies: string[] = [];
   protected searchInputString: string = 'Ver más opciones';
   protected loading: boolean = true;
   protected seeMoreFilters: boolean = false;
@@ -56,10 +67,6 @@ export class PaymentListComponent {
   };
 
   ngOnInit(): void {
-    this.payments = this.paymentService.getPayments();
-    this.statuses = [...new Set(this.payments.map((c) => c.paymentStatus))];
-    this.methods = [...new Set(this.payments.map((c) => c.paymentMethod))];
-    this.companies = [...new Set(this.payments.map((c) => c.company))];
     setTimeout(() => {
       this.loading = false;
     }, 500);
@@ -75,11 +82,11 @@ export class PaymentListComponent {
       : (this.searchInputString = 'Ver más opciones');
   }
 
-  applyDateRangeFilter(table: Table) {
+  protected applyDateRangeFilter(table: Table) {
     table.filter(this.filters, 'date', 'custom');
   }
 
-  customDateFilter(value: any, filter: any): boolean {
+  protected customDateFilter(value: any, filter: any): boolean {
     if (!filter.startDate && !filter.endDate) return true;
 
     const date = new Date(value); // fecha del registro
@@ -96,7 +103,32 @@ export class PaymentListComponent {
     return true;
   }
 
-  exportCsv(): void {
+  protected exportCsv(): void {
     this.paymentTable.exportCSV();
+  }
+
+  protected onNewRegister():void {
+    this.newRegister.emit();
+  }
+
+  protected onEditRegister(register: Payment):void {
+    this.editRegister.emit(register);
+  }
+
+  protected deletePayment(id: string): void {
+    this.alertService
+      .optionsAlert('¿Seguro que deseas eliminar este pago?')
+      .then((result) => {
+        if (result.isConfirmed) {
+          this.paymentService.deletePayment(id);
+          this.payments = this.paymentService.getPayments();
+          this.alertService.successAlert(
+            'El pago ha sido eliminado correctamente.'
+          );
+        }
+      })
+      .catch(() => {
+        this.alertService.errorAlert('No se pudo eliminar el pago.');
+      });
   }
 }

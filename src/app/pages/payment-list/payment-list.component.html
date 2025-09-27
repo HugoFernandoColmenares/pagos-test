@@ -1,5 +1,5 @@
 <div class="w-full flex justify-end">
-  <button class="primary-bg btn">Agregar</button>
+  <button class="primary-bg btn" (click)="onNewRegister()">Agregar</button>
 </div>
 
 <p-table
@@ -48,12 +48,10 @@
         <!-- Campo de filtro por rango de fechas -->
         <div class="flex items-center gap-2">
           <p-datepicker [(ngModel)]="filters.startDate" [showIcon]="true" dateFormat="dd/mm/yy"
-            placeholder="Fecha inicial" (ngModelChange)="applyDateRangeFilter(paymentTable)">
-          </p-datepicker>
+            placeholder="Fecha inicial" (ngModelChange)="applyDateRangeFilter(paymentTable)" />
 
           <p-datepicker [(ngModel)]="filters.endDate" [showIcon]="true" dateFormat="dd/mm/yy" placeholder="Fecha final"
-            (ngModelChange)="applyDateRangeFilter(paymentTable)">
-          </p-datepicker>
+            (ngModelChange)="applyDateRangeFilter(paymentTable)" />
         </div>
 
         <p-select [options]="companies" [(ngModel)]="filters.company" [showClear]="true" placeholder="Empresa"
@@ -114,9 +112,9 @@
       <td>{{ payment.paymentStatus }}</td>
       <td>{{ payment.paymentMethod }}</td>
       <td>
-        <i class="pi pi-pencil cursor-pointer" style="font-size: 1rem"></i>
+        <i class="pi pi-pencil cursor-pointer" style="font-size: 1rem" (click)="onEditRegister(payment)"></i>
         <i class="pi pi-file cursor-pointer" style="font-size: 1rem"></i>
-        <i class="pi pi-trash cursor-pointer danger-text" style="font-size: 1rem"></i>
+        <i class="pi pi-trash cursor-pointer danger-text" style="font-size: 1rem" (click)="deletePayment(payment.id)"></i>
       </td>
     </tr>
   </ng-template>

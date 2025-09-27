@@ -6,9 +6,31 @@
       Este módulo le permitirá listar, filtrar y registrar pagos con un
       control básico de permisos y exportación de datos.
     </p>
-    @if (isShowingForm) {}
+    @if (isShowingForm) {
+      <pages-payment-form
+        [payments]="payments"
+        [statuses]="statuses"
+        [methods]="methods"
+        [companies]="companies"
+        [types]="types"
+        [operationAreas]="operationAreas"
+        [categories]="categories"
+        [thirdParties]="thirdParties"
+        [payment]="selectPayment"
+        (closeForm)="onClose()"
+        (save)="onAdd($event)"
+        (edit)="onEdit($event)"
+      />
+    }
     @else {
-      <pages-payment-list />
+      <pages-payment-list
+      [payments]="payments"
+      [statuses]="statuses"
+      [methods]="methods"
+      [companies]="companies"
+      (newRegister)="onNewRegisterFromChild()"
+      (editRegister)="onEditRegisterFromChild($event)"
+      />
     }
   </div>
   <shared-footer />
