@@ -69,6 +69,10 @@ h3 {
   color: var(--color-accent);
 }
 
+.danger-text {
+  color: var(--color-danger);
+}
+
 .primary-bg {
   background: var(--color-primary);
   color: var(--color-bg);
@@ -86,6 +90,11 @@ h3 {
 
 .accent-bg {
   background: var(--color-accent);
+  color: var(--color-bg);
+}
+
+.danger-bg {
+  background: var(--color-danger);
   color: var(--color-bg);
 }
 

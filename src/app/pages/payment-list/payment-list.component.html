@@ -1,36 +1,122 @@
 <div class="w-full flex justify-end">
   <button class="primary-bg btn">Agregar</button>
 </div>
-<p-table id="payments-table" [value]="payments" showGridlines [paginator]="true" [rows]="10">
-  <ng-template #header>
+
+<p-table
+  #paymentTable
+  id="payments-table"
+  [value]="payments"
+  [paginator]="true"
+  [rows]="10"
+  [rowsPerPageOptions]="[10, 25, 50]"
+  [loading]="loading"
+  [globalFilterFields]="['id','date','company','operationArea','category','thirdParty','operationValue','paymentStatus','incomeOrExpense']"
+  showGridlines
+  [filterDelay]="0"
+  [showCurrentPageReport]="true"
+  currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} registros"
+  size="small"
+>
+
+  <!-- Toolbar de filtros -->
+  <ng-template pTemplate="caption">
+    <div class="flex flex-col gap-2">
+      <!-- Filtro global -->
+      <div class="flex items-center gap-2">
+        <p-iconfield>
+          <p-inputicon>
+            <i class="pi pi-search"></i>
+          </p-inputicon>
+          <input id="global-filter" pInputText type="text" [(ngModel)]="filters.global"
+            (ngModelChange)="paymentTable.filterGlobal(filters.global, 'contains')"
+            placeholder="Buscar en todos los campos..." />
+        </p-iconfield>
+
+        <button id="advance-filter" class="primary-bg btn" (click)="toggleSeeMoreFilters()"> {{ searchInputString }} </button>
+
+        <button class="secondary-bg btn" (click)="paymentTable.exportCSV()">
+          Exportar CSV
+        </button>
+      </div>
+
+      <!-- Filtros por columna -->
+      @if (seeMoreFilters) {
+      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2">
+        <input pInputText type="text" [(ngModel)]="filters.id"
+          (ngModelChange)="paymentTable.filter(filters.id, 'id', 'contains')" placeholder="Filtrar ID...">
+
+        <!-- Campo de filtro por rango de fechas -->
+        <div class="flex items-center gap-2">
+          <p-datepicker [(ngModel)]="filters.startDate" [showIcon]="true" dateFormat="dd/mm/yy"
+            placeholder="Fecha inicial" (ngModelChange)="applyDateRangeFilter(paymentTable)">
+          </p-datepicker>
+
+          <p-datepicker [(ngModel)]="filters.endDate" [showIcon]="true" dateFormat="dd/mm/yy" placeholder="Fecha final"
+            (ngModelChange)="applyDateRangeFilter(paymentTable)">
+          </p-datepicker>
+        </div>
+
+        <p-select [options]="companies" [(ngModel)]="filters.company" [showClear]="true" placeholder="Empresa"
+          (ngModelChange)="paymentTable.filter(filters.company, 'company', 'contains')" />
+
+        <input pInputText type="text" [(ngModel)]="filters.operationArea"
+          (ngModelChange)="paymentTable.filter(filters.operationArea, 'operationArea', 'contains')"
+          placeholder="Filtrar Área...">
+
+        <input pInputText type="text" [(ngModel)]="filters.category"
+          (ngModelChange)="paymentTable.filter(filters.category, 'category', 'contains')"
+          placeholder="Filtrar Rubro...">
+
+        <input pInputText type="text" [(ngModel)]="filters.thirdParty"
+          (ngModelChange)="paymentTable.filter(filters.thirdParty, 'thirdParty', 'contains')"
+          placeholder="Filtrar Tercero...">
+
+        <input pInputText type="number" [(ngModel)]="filters.operationValue"
+          (ngModelChange)="paymentTable.filter(filters.operationValue, 'operationValue', 'contains')" min="0"
+          placeholder="Filtrar Valor...">
+
+        <p-multiselect [options]="statuses" [(ngModel)]="filters.paymentStatus" placeholder="Seleccionar Estado"
+          (ngModelChange)="paymentTable.filter(filters.paymentStatus, 'paymentStatus', 'contains')" />
+
+        <p-select [options]="methods" [(ngModel)]="filters.paymentMethod" [showClear]="true" placeholder="Forma de Pago"
+          (ngModelChange)="paymentTable.filter(filters.paymentMethod, 'paymentMethod', 'contains')" />
+      </div>
+      }
+    </div>
+  </ng-template>
+
+  <!-- Encabezados -->
+  <ng-template pTemplate="header">
     <tr>
       <th>ID</th>
-      <th>Fecha</th>
+      <th pSortableColumn="date">Fecha <p-sortIcon field="date" /></th>
       <th>Empresa</th>
       <th>Área Operación</th>
       <th>Rubro</th>
       <th>Tercero</th>
-      <th>Valor</th>
+      <th pSortableColumn="operationValue">Valor <p-sortIcon field="operationValue" /></th>
       <th>Estado</th>
       <th>Forma de Pago</th>
       <th>Acciones</th>
     </tr>
   </ng-template>
-  <ng-template #body let-payment>
+
+  <!-- Filas -->
+  <ng-template pTemplate="body" let-payment>
     <tr>
-      <td>{{ payment.id | titlecase }}</td>
-      <td>{{ payment.date | date:'yyyy-MM-dd' }}</td>
+      <td>{{ payment.id }}</td>
+      <td>{{ payment.date | date: 'dd/MM/yyyy' }}</td>
       <td>{{ payment.company }}</td>
-      <td>{{ payment.operationArea | titlecase  }}</td>
-      <td>{{ payment.category | titlecase  }}</td>
+      <td>{{ payment.operationArea }}</td>
+      <td>{{ payment.category }}</td>
       <td>{{ payment.thirdParty }}</td>
       <td>{{ payment.operationValue | currency:'COP' }}</td>
-      <td>{{ payment.paymentStatus | titlecase  }}</td>
-      <td>{{ payment.incomeOrExpense | titlecase  }}</td>
+      <td>{{ payment.paymentStatus }}</td>
+      <td>{{ payment.paymentMethod }}</td>
       <td>
-        <i class="pi pi-pencil" style="font-size: 1rem"></i>
-        <i class="pi pi-file" style="font-size: 1rem"></i>
-        <i class="pi pi-trash" style="font-size: 1rem"></i>
+        <i class="pi pi-pencil cursor-pointer" style="font-size: 1rem"></i>
+        <i class="pi pi-file cursor-pointer" style="font-size: 1rem"></i>
+        <i class="pi pi-trash cursor-pointer danger-text" style="font-size: 1rem"></i>
       </td>
     </tr>
   </ng-template>

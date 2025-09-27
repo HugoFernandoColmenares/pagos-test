@@ -16,6 +16,7 @@
       .pi {
         padding: 0.5rem;
         border-radius: 50%;
+        transition: 0.3s ease-in-out;
       }
 
       .pi:not(:last-child) {
@@ -26,6 +27,15 @@
         background: var(--color-primary);
         color: var(--color-bg);
       }
+
+      .pi:last-child:hover {
+        background: var(--color-danger);
+        color: var(--color-bg);
+      }
     }
   }
+}
+
+#advance-filter {
+  padding: 0.5rem;
 }
