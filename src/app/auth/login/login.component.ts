@@ -14,7 +14,8 @@ import { CheckboxModule } from 'primeng/checkbox';
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { AuthService } from '../../core/services/auth.service';
-import { loginRequestDto } from '../../core/interfaces/auth.interface';
+import { UserType } from '../../core/interfaces/auth.interface';
+import { SelectModule } from 'primeng/select';
 
 @Component({
   selector: 'auth-login',
@@ -25,40 +26,57 @@ import { loginRequestDto } from '../../core/interfaces/auth.interface';
     CheckboxModule,
     InputGroupModule,
     InputGroupAddonModule,
+    SelectModule,
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css',
 })
 export class LoginComponent implements OnInit {
-  // Angular
   private fb = inject(FormBuilder);
   private router = inject(Router);
-
-  // Custom
   private authService = inject(AuthService);
 
-  // Variables
   protected passwordIcon: 'pi pi-eye' | 'pi pi-eye-slash' = 'pi pi-eye-slash';
   protected passwordType: 'text' | 'password' = 'password';
   protected togglePasswordIcon: boolean = false;
   protected isRememberActive: boolean = false;
+  protected selectedUser: UserType | null = null;
 
-  // Se verifica si existen datos de usuario al inicio del componente
-  ngOnInit(): void {
-    const currentSesson = this.authService.getSession();
-    if(currentSesson) {
-      this.isRememberActive = true;
-      this.loginForm.controls["email"].setValue(currentSesson.email);
-      this.loginForm.controls["password"].setValue(currentSesson.password);
-    }
-  }
+  protected userTypes: UserType[] = [
+    {
+      name: 'Administrator',
+      email: 'admin@correo.com',
+      password: 'SuperSecurePassword@123',
+      authLevel: 'admin',
+    },
+    {
+      name: 'Moderator',
+      email: 'mod@correo.com',
+      password: 'DynamicPassword_123',
+      authLevel: 'mod',
+    },
+    {
+      name: 'User',
+      email: 'user@correo.com',
+      password: 'password.123',
+      authLevel: 'user',
+    },
+  ];
 
   protected loginForm: FormGroup = this.fb.group({
-    email: ['', [Validators.required, Validators.email]],
+    email: ['', Validators.required],
     password: ['', [Validators.required, Validators.minLength(6)]],
   });
 
-  // Método al enviar el formulario
+  ngOnInit(): void {
+    const currentSesson = this.authService.getSession();
+    if (currentSesson) {
+      this.isRememberActive = true;
+      this.loginForm.controls['email'].setValue(currentSesson.email);
+      this.loginForm.controls['password'].setValue(currentSesson.password);
+    }
+  }
+
   protected onSubmit(): void {
     if (this.loginForm.invalid) {
       this.loginForm.markAllAsTouched();
@@ -66,28 +84,47 @@ export class LoginComponent implements OnInit {
     }
 
     const { email, password } = this.loginForm.value;
+
+    const foundUser = this.userTypes.find(
+      (u) => u.email === email && u.password === password
+    );
+
+    if (!foundUser) {
+      console.error('Credenciales inválidas');
+      return;
+    }
+    this.authService.login(email, password, foundUser.authLevel);
     this.router.navigateByUrl('/main');
-    console.log('Login data:', { email, password });
   }
 
-  // Cambiar icono
   protected toggleIcon(): void {
     this.togglePasswordIcon = !this.togglePasswordIcon;
-    if (this.togglePasswordIcon) {
-      this.passwordIcon = 'pi pi-eye';
-      this.passwordType = 'text';
-    } else {
-      this.passwordIcon = 'pi pi-eye-slash';
-      this.passwordType = 'password';
+    this.passwordIcon = this.togglePasswordIcon
+      ? 'pi pi-eye'
+      : 'pi pi-eye-slash';
+    this.passwordType = this.togglePasswordIcon ? 'text' : 'password';
+  }
+
+  protected rememberUser(): void {
+    this.isRememberActive = !this.isRememberActive;
+    if (this.isRememberActive && !this.loginForm.invalid) {
+      this.authService.saveSession(this.loginForm.value);
     }
   }
 
-  // Recordar Usuario
-  protected rememberUser(): void {
-    this.isRememberActive = !this.isRememberActive;
-    const user: loginRequestDto = this.loginForm.value;
-    if(this.isRememberActive && !this.loginForm.invalid) {
-      this.authService.saveSession(user);
-    }
+  protected onSelectUser(event: any): void {
+  const email = event.value;
+  const temp = this.userTypes.find((u) => u.email === email);
+  this.selectedUser = temp ?? null;
+
+  if (this.selectedUser) {
+    // Rellenar automáticamente la contraseña en el form
+    this.loginForm.patchValue({
+      password: this.selectedUser.password
+    });
+  } else {
+    this.loginForm.patchValue({ password: '' });
   }
+}
+
 }

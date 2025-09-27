@@ -1,4 +1,4 @@
-<header class="w-full flex items-center justify-between p-4 border-b"
+<header class="w-full flex items-center justify-between p-4 border-b custom-border-bottom"
         style="background: var(--color-surface); border-color: var(--color-border); font-family: var(--font-sans);">
 
   <!-- Logo / Título -->
@@ -11,27 +11,13 @@
     </span>
   </div>
 
-  <!-- Navegación -->
-  <nav class="flex items-center gap-6 text-sm font-medium">
-    <a href="#" class="transition-colors" style="color: var(--color-text);">
-      List
-    </a>
-    <a href="#" class="transition-colors" style="color: var(--color-text);">
-      Filters
-    </a>
-    <a href="#" class="transition-colors" style="color: var(--color-text);">
-      Register
-    </a>
-    <a href="#" class="primary-text transition-colors">
-      Export
-    </a>
-  </nav>
-
   <!-- Perfil / Usuario -->
   <div class="flex items-center gap-3">
-    <span class="text-sm" style="color: var(--color-text-muted);">Admin</span>
-    <div class="h-8 w-8 flex items-center justify-center rounded-full primary-bg font-bold">
-      A
+    @if (currentUser !== null) {
+      <p-badge [value]="'Rol: ' + (currentUser.role | roleBadge).label" [severity]="returnSeverity((currentUser.role | roleBadge).severity)" />
+    }
+    <div id="logout" class="btn danger-bg" (click)="onCloseSesson()">
+      Salir
     </div>
   </div>
 </header>

@@ -2,41 +2,42 @@
   <button class="primary-bg btn" (click)="onNewRegister()">Agregar</button>
 </div>
 
-<p-table
-  #paymentTable
-  id="payments-table"
-  [value]="payments"
-  [paginator]="true"
-  [rows]="10"
-  [rowsPerPageOptions]="[10, 25, 50]"
-  [loading]="loading"
+<p-table #paymentTable id="payments-table" [value]="payments" [paginator]="true" [rows]="10"
+  [rowsPerPageOptions]="[10, 25, 50]" [loading]="loading"
   [globalFilterFields]="['id','date','company','operationArea','category','thirdParty','operationValue','paymentStatus','incomeOrExpense']"
-  showGridlines
-  [filterDelay]="0"
-  [showCurrentPageReport]="true"
-  currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} registros"
-  size="small"
->
+  showGridlines [filterDelay]="0" [showCurrentPageReport]="true"
+  currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} registros" size="small">
 
   <!-- Toolbar de filtros -->
   <ng-template pTemplate="caption">
     <div class="flex flex-col gap-2">
-      <!-- Filtro global -->
-      <div class="flex items-center gap-2">
-        <p-iconfield>
-          <p-inputicon>
-            <i class="pi pi-search"></i>
-          </p-inputicon>
-          <input id="global-filter" pInputText type="text" [(ngModel)]="filters.global"
-            (ngModelChange)="paymentTable.filterGlobal(filters.global, 'contains')"
-            placeholder="Buscar en todos los campos..." />
-        </p-iconfield>
+      <div class="flex items-center justify-between gap-2">
+        <!-- Filtro global -->
+        <div class="flex items-center gap-2">
+          <p-iconfield>
+            <p-inputicon>
+              <i class="pi pi-search"></i>
+            </p-inputicon>
+            <input id="global-filter" pInputText type="text" [(ngModel)]="filters.global"
+              (ngModelChange)="paymentTable.filterGlobal(filters.global, 'contains')"
+              placeholder="Buscar en todos los campos..." />
+          </p-iconfield>
 
-        <button id="advance-filter" class="primary-bg btn" (click)="toggleSeeMoreFilters()"> {{ searchInputString }} </button>
+          <button id="advance-filter" class="primary-bg btn" (click)="toggleSeeMoreFilters()"> {{ searchInputString }}
+          </button>
 
-        <button class="secondary-bg btn" (click)="paymentTable.exportCSV()">
-          Exportar CSV
-        </button>
+          <button id="export-btn" class="secondary-bg btn" (click)="exportCsv()">
+            Exportar CSV
+          </button>
+        </div>
+
+        <!-- Resumen dinámico -->
+        <div class="text-sm text-gray-600">
+          Registros filtrados:
+          <b>{{ getFilteredSummary().count }}</b> |
+          Suma del valor:
+          <b>{{ getFilteredSummary().total | currency:'COP' }}</b>
+        </div>
       </div>
 
       <!-- Filtros por columna -->
@@ -114,7 +115,8 @@
       <td>
         <i class="pi pi-pencil cursor-pointer" style="font-size: 1rem" (click)="onEditRegister(payment)"></i>
         <i class="pi pi-file cursor-pointer" style="font-size: 1rem"></i>
-        <i class="pi pi-trash cursor-pointer danger-text" style="font-size: 1rem" (click)="deletePayment(payment.id)"></i>
+        <i class="pi pi-trash cursor-pointer danger-text" style="font-size: 1rem"
+          (click)="deletePayment(payment.id)"></i>
       </td>
     </tr>
   </ng-template>

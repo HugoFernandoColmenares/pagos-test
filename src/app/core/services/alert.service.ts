@@ -14,6 +14,15 @@ export class AlertService {
     });
   }
 
+  public warningAlert(message: string = '¡Advertencia! Por favor revise los datos') {
+    Swal.fire({
+      title: 'Advertencia',
+      text: message,
+      icon: 'warning',
+      confirmButtonText: 'Ok',
+    });
+  }
+
   public errorAlert(message: string = 'Algo salió mal.') {
     Swal.fire({
       title: 'Error',

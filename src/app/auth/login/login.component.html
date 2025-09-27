@@ -11,10 +11,17 @@
     <form class="flex flex-col gap-4" [formGroup]="loginForm" (ngSubmit)="onSubmit()" autocomplete="off">
       <!-- Email -->
       <div class="flex flex-col gap-2">
-        <label for="email" class="text-sm">Email</label>
-        <input id="email" type="email" pInputText formControlName="email" class="flex-1 text-sm"
-          placeholder="you@example.com" required />
-      </div>
+      <label class="text-sm">User</label>
+      <p-select
+        id="email"
+        [options]="userTypes"
+        optionLabel="name"
+        optionValue="email"
+        formControlName="email"
+        placeholder="Select a user"
+        (onChange)="onSelectUser($event)"
+      ></p-select>
+    </div>
 
       <!-- Password -->
       <div class="flex flex-col gap-2">
@@ -23,7 +30,7 @@
           <p-inputgroup-addon class="cursor-pointer" (click)="toggleIcon()">
             <i [class]="passwordIcon"></i>
           </p-inputgroup-addon>
-          <input id="password"  class="flex-1 text-sm" [type]="passwordType" pInputText formControlName="password" placeholder="••••••••" required />
+          <input id="password" class="flex-1 text-sm" [type]="passwordType" pInputText formControlName="password" placeholder="••••••••" required />
         </p-inputgroup>
       </div>
 

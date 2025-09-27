@@ -102,6 +102,10 @@ h3 {
   border: 2px solid var(--color-primary);
 }
 
+.custom-border-bottom {
+  border-bottom: 0.5rem solid var(--color-primary);
+}
+
 .btn {
   padding: 1rem;
   border-radius: 0.5rem;
